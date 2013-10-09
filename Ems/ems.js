@@ -1,4 +1,4 @@
-var config = require('./config');
+var config = require('./../lib/config');
 var code = require('./emsCode');
 var http = require('http');
 exports.ems = function (com, nu, callback) {
