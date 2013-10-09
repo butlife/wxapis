@@ -1,6 +1,6 @@
 var mongo = require('mongoskin');
 var config = require('./../lib/config');
-var db = mongo.db(config.mongocon);
+var db = mongo.db('localhost:27017/test');
 db.open(function (err) {
     if (err) {
         console.log(err);
