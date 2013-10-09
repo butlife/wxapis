@@ -1,6 +1,6 @@
 var $ = require('jquery');
 var needle = require('needle');
-//var db = require('./../lib/db');
+var db = require('./../db/caipiaoDB');
 exports.cp = function (callbacks) {
     needle.get('http://baidu.lecai.com/lottery/draw/?agentId=5555', function (err, resp, body) {
         if (!err && resp.statusCode == 200) {
@@ -14,7 +14,7 @@ exports.cp = function (callbacks) {
                     var startDate = $(item).find("td:eq(2)").text().trim();
                     var Number = $(item).find("td:eq(3)").text().toString().replace(/ /g, '').replace(/	/g, '');
                     console.log("number:" + Number);
-                   // db.insert_caipiao(type, issue, startDate, Number)
+                   db.insert_caipiao(type, issue, startDate, Number)
                     result += '{"type":"' + type + '","issue":"' + issue + '","startdate":"' + startDate + '","number":"' + Number + '"},';
                 }
             });

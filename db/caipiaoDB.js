@@ -1,5 +1,5 @@
 var mongo = require('mongoskin');
-var config = require('./config');
+var config = require('./../lib/config');
 var db = mongo.db(config.mongocon);
 db.open(function (err) {
     if (err) {
