@@ -6,6 +6,7 @@ var ems = require('./Ems/ems');
 var bus = require('./bus/BusService');
 var bus8684 = require('./bus/8684');
 var movie = require('./movie/mtime');
+var wx = require('./wx/usermsg');
 http.createServer(function (req, res) {
     res.writeHead(200, {'Content-Type': 'text/html,charset=utf8'});
     req.setEncoding('utf8');
@@ -69,6 +70,11 @@ http.createServer(function (req, res) {
         movie.mtime("cinema", yyname, function (result) {
             res.end(result);
         });
+    }
+    else if(type=="wx"){
+        wx.wxmsg(function(result){
+            res.end(result);
+        })
     }
     else {
         res.end('end');
