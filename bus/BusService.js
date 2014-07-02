@@ -8,19 +8,19 @@ exports.bus = function (type, station1, station2, line, x, y, callback) {
     var url = "";
     switch (type) {
         case "StationInfo":
-            url = "http://120.194.49.246/nimei.ashx?type=zhan&station=" + station1;
+            url = "http://120.194.49.246:81/nimei.ashx?type=zhan&station=" + station1;
             break
         case "WaitForBus":
-            url = "http://120.194.49.246/nimei.ashx?type=wait_for_bus&station=" + station1 + "&line=" + line;
+            url = "http://120.194.49.246:81/nimei.ashx?type=wait_for_bus&station=" + station1 + "&line=" + line;
             break
         case "LineInfo":
-            url = "http://120.194.49.246/nimei.ashx?type=line_info&line=" + line;
+            url = "http://120.194.49.246:81/nimei.ashx?type=line_info&line=" + line;
             break
         case "Change"  :
-            url = "http://120.194.49.246/nimei.ashx?type=s_s&sstart=" + station1 + "&estart=" + station2;
+            url = "http://120.194.49.246:81/nimei.ashx?type=s_s&sstart=" + station1 + "&estart=" + station2;
             break
         case "coordinate":
-            url = "http://120.194.49.246/nimei.ashx?type=xy&x=" + x + "&y=" + y;
+            url = "http://120.194.49.246:81/nimei.ashx?type=xy&x=" + x + "&y=" + y;
             break
 
     }
