@@ -1,112 +1,75 @@
+/**
+ * Created by chuanlong on 2014/8/22.
+ */
 var http = require('http'),
-    $ = require('jquery'),
     iconv = require('iconv-lite'),
-    url = require('url'),
-    querystring = require('querystring'),
-    db = require('./../db/movieDB');
+    env = require('jsdom').env,
+    dyy = {
+        4187: '安阳横店影城',
+        2090: '安阳工人文化宫数字3D影城',
+        3328: '林州奥斯卡开元影城',
+        3105: '安阳奥斯卡榕森影城（殷都店）',
+        3030: '滑县奥斯卡浩创电影城',
+        1105: '安阳奥斯卡榕森影城',
+        3221: '安阳内黄天翼奥斯卡影城'
+    };
 
-exports.mtime = function (type, values, callback) {
-    var getUrl = "", movie = "", cinema = "";
-    if (type == "all") {
-        getUrl = 'http://theater.mtime.com/China_Henan_Province_Anyang/movie/';//所有电影
-        collectmovie(getUrl, type, callback)
-    }
-    if (type == "movie") {
-        db.find(values, function (id) {
-            getUrl = 'http://theater.mtime.com/China_Henan_Province_Anyang/movie/' + id + '/';//单个电影
-            collectmovie(getUrl, type, callback)
-        });
 
-    }
-    if (type == "cinema") {
-        if (values == "3105") {
-            getUrl = "http://theater.mtime.com/China_Henan_Province_Anyang_YanDouQu/" + values + "/";
-        } else {
-            getUrl = "http://theater.mtime.com/China_Henan_Province_Anyang_BeiGuanQu/" + values + "/";
-        }
 
-        collectmovie(getUrl, type, callback)
-    }
-
-};
-
-function collectmovie(getUrl, type, callback) {
-    //console.log("geturl:" + getUrl);
-    if (getUrl == "") {
-        callback(null)
-
-    } else {
-        var html = "";
-        var now = new Date();
-
-        http.get(getUrl, function (res) {
-            res.setEncoding('binary');
-            res.on('data',function (data) {
-                if (type == "movie") {
-                    html += data.replace('<script type="text/javascript">', '<div class="zcl">').replace('</script>', '</div>');
-                } else {
-                    html += data;
-                }
-            }).on('end', function () {
-                    var buf = new Buffer(html, 'binary');
-                    var str = iconv.decode(buf, 'utf-8');
-                    var dom = $(str).html();
-                    if (type == "all") {
-                        var result = "最近所有上映新片：\r\n";
-                        var ul = $(dom).find("#hotplayRegion");
-                        $(ul).find("h3").each(function (i, h3) {
-                            var title = $(h3).text();
-                            result += title + "\r\n";
-                            var id = $(h3).find("a").attr('href').toString().replace('http://theater.mtime.com/China_Henan_Province_Anyang/movie/', '').replace('/', '');
-                            db.insert(title, id);
-
-                        });
+exports.getInfo=function(id,cb){
+    http.get('http://theater.mtime.com/China_Henan_Province_Anyang/movie/'+id+'/', function (res) {
+    var html = '';
+    var result = '';
+    var json = '';
+    res.setEncoding('binary');
+    res.on('data',function (data) {
+        html += data;
+    }).on('end', function () {
+            var buf = new Buffer(html, 'binary');
+            var str = iconv.decode(buf, 'utf-8');
+            env(str, function (errors, window) {
+                var $ = require('jquery')(window);
+                var movieN = $(str).find('.videoname h2')[0];
+                var name = $(movieN).html();
+                $(str).find('script').each(function (index, item) {
+                    var script = $(item).html();
+                    if (script.indexOf('showtimesJson') != -1) {
+                        var temp = script.toString().replace(/\n/g, '').split('var');
+                        json = $.parseJSON(temp[4].replace('showtimesJson', '').replace('=', '').replace(/new Date\("/g, '"').replace(/"\)/g, '"').replace(';', ''));
                     }
-                    else if (type == "movie") {
-                        // console.log(dom);
-                        var dl = $(dom).find("div.zcl").eq(-2);
-                        // console.log(dl);
-                        var result = "";
-                        $(dl).find("dd").each(function (i, dd) {
-                            var title = $(dd).find("h3").text();
-                            var ul = $(dd).find("ul").eq(1);
-                            var list = "";
-                            $(ul).find("li").each(function (i, li) {
-                                var time = $(li).find("a b strong").text();
-                                var money = $(li).find("a em").text();
-                                list += time + "-----" + money + "\r\n";
-
-                            });
-                            result += "电影院：" + title + "\r\n放映时间及价格:\r\n" + list + "\r\n\r\n";
-
-                        });
-
-
-                    }
-                    else if (type == "cinema") {
-                        var table = $(dom).find("#theaterShowtimeListDiv");
-                        //console.log($(dom).html());
-                        var result = "";
-                        $(table).find("dd").each(function (i, div) {
-                            var title = $(div).find("a.c_000").text();
-                            var times = $(div).find("ul.s_timelist");
-                            var list = "";
-                            $(times).find("li.ticketnone").each(function (i, li) {
-                                var money = $(li).find("em").text();
-                                var time = $(li).find("a b strong").text();
-                                list += time + "-----" + money + "\r\n";
-                            });
-                            result += "▪" + title + "\r\n场次及价格:\r\n" + list;
-                        });
-                    }
-                    else {
-                        result = "无";
-                    }
-                    console.log('耗时：' + (new Date().getTime() - now.getTime()) + 'ms');
-                    callback(result);
                 });
+                for (var key in json) {
+                    var d = new Date(json[key].realtime);
+                    result += '影院：' + dyy[json[key].cinemaId] + ' 类型：' + json[key].version + ' 大厅：' + json[key].hallName + ' 开始时间：' + (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + d.getHours() + ':' + d.getMinutes() + ' 价格：' + json[key].price + '元 是否在售：' + json[key].isSale + ' \r\n';
+                }
+                cb('电影名称：' + name + '\r\n' + result)
+            });
+
         });
-    }
-
-
+});
 }
+exports.getAllMovie=function(cb){
+    http.get('http://theater.mtime.com/China_Henan_Province_Anyang/', function (res) {
+        var html = '';
+        var json = '';
+        res.setEncoding('binary');
+        res.on('data',function (data) {
+            html += data;
+        }).on('end', function () {
+                var buf = new Buffer(html, 'binary');
+                var str = iconv.decode(buf, 'utf-8');
+                env(str, function (errors, window) {
+                    var $ = require('jquery')(window);
+                    $(str).find('script').each(function (index, item) {
+                        var script = $(item).html();
+                        if (script.indexOf('hotplaySvList') != -1) {
+                            json = script.toString().replace(/\n/g, '').replace('var', '').replace('hotplaySvList', '').replace('=', '').replace(';', '').replace(/movie.mtime.com/g, 'theater.mtime.com/China_Henan_Province_Anyang/movie');
+                            cb(json)
+                        }
+                    });
+                });
+
+            });
+    });
+}
+
