@@ -33,7 +33,7 @@ exports.getInfo = function (id, cb) {
                     });
                     for (var key in json) {
                         var d = new Date(json[key].realtime);
-                        var time = (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + d.getHours() + ':' + d.getMinutes();
+                        var time = (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + d.getHours() + ':' + (d.getMinutes()<10?'0'+ d.getMinutes(): d.getMinutes());
                         result += ',{"cinemaId":' + json[key].cinemaId + ',"version":"' + json[key].version + '","hallName":"' + json[key].hallName + '","realtime":"' + time + '","price":"' + json[key].price + '","isSale":' + json[key].isSale + '}';
                     }
                     result = '[' + result.substring(1) + ']';
