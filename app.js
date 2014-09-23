@@ -45,7 +45,8 @@ http.createServer(function (req, res) {
         });
     }
     else if(type==="aqi"){
-        aqi.getAqi(function(data){
+        var callback = querystring.parse(query).callback;
+        aqi.getAqi(callback,function(data){
             res.end(data);
         });
     }
