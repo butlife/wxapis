@@ -32,9 +32,11 @@ exports.line = function (line, callback) {
                         var lines = strs[27];
                         var post='';
                         if(lines){
+							if(lines.indexOf('||')!==-1){
                             lines = lines.substring(0, lines.indexOf('||')).trim();
                             lines = lines.replace(/\|/g, ',') + '\r\n';
                             post = "安阳公交小喇叭提醒您：\r\n" + info + money + lines + "\r\n1、发送“G+站点名”查看对应公交站线路及车辆到站时间。\r\n2、发送“G”进行更多公交查询。";
+							}
                         }else{
                             post = "安阳公交小喇叭提醒您：\r\n没有此公交\r\n1、发送“G+站点名”查看对应公交站线路及车辆到站时间。\r\n2、发送“G”进行更多公交查询。";
                         }
