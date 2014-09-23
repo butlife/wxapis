@@ -13,7 +13,7 @@ exports.getAqi = function (cb) {
             env(html, function (errors, window) {
                 var $ = require('jquery')(window);
                 var result=$(html).find('.aqivalue')[0];
-                cb('空气质量（AQI）:'+$(result).text())
+                cb('<span style="font-size: 12px">空气质量（AQI）:'+$(result).text()+'</span>')
             });
         });
     });
