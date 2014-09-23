@@ -4,6 +4,7 @@ var http = require("http"),
     bus = require('./bus/BusService'),
     bus8684 = require('./bus/8684'),
     movie = require('./movie/mtime'),
+    aqi=require('./aqi/aqi'),
     query, type, line, id, station1, station2, gjtype, x, y;
 
 
@@ -40,6 +41,11 @@ http.createServer(function (req, res) {
         console.log('movieinfo')
         id = querystring.parse(query).id;
         movie.getInfo(id, function (data) {
+            res.end(data);
+        });
+    }
+    else if(type==="aqi"){
+        aqi.getAqi(function(data){
             res.end(data);
         });
     }

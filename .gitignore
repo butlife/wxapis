@@ -1,0 +1,5 @@
+# Created by .gitignore support plugin (hsz.mobi)
+/.idea
+/node_modules/iconv-lite
+/node_modules/jquery
+/node_modules/jsdom

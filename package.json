@@ -1,0 +1,21 @@
+{
+  "name": "apis",
+  "version": "1.0.0",
+  "description": "apis\r ====",
+  "main": "app.js",
+  "dependencies": {
+    "jquery": "^2.1.1"
+  },
+  "devDependencies": {
+    "iconv-lite": "^0.4.4",
+    "jsdom": "^1.0.0-pre.7"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.be.com:zcl/apis.git"
+  },
+  "author": "ZhangChl"
+}
