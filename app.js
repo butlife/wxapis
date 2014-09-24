@@ -32,19 +32,20 @@ http.createServer(function (req, res) {
         })
     }
     else if (type === "allmovie") {
-        console.log('movie')
+        console.log('movie');
         movie.getAllMovie(function (data) {
             res.end(data);
         });
     }
     else if (type === "movieinfo") {
-        console.log('movieinfo')
+        console.log('movieinfo');
         id = querystring.parse(query).id;
         movie.getInfo(id, function (data) {
             res.end(data);
         });
     }
     else if(type==="aqi"){
+        console.log('aqi');
         var callback = querystring.parse(query).callback;
         aqi.getAqi(callback,function(data){
             res.end(data);
@@ -56,4 +57,4 @@ http.createServer(function (req, res) {
 
 
 }).listen(3003);
-console.log("runing 3003")
+console.log("runing 3003");

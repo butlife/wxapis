@@ -31,7 +31,7 @@ exports.line = function (line, callback) {
                         var money = strs[15] + '\r\n';
                         var lines = strs[27];
                         var post='';
-                        if(lines){
+                        if(typeof lines!=='undefined'){
 							if(lines.indexOf('||')!==-1){
                             lines = lines.substring(0, lines.indexOf('||')).trim();
                             lines = lines.replace(/\|/g, ',') + '\r\n';
