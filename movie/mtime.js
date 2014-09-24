@@ -38,6 +38,7 @@ exports.getInfo = function (id, cb) {
                     }
                     result = '[' + result.substring(1) + ']';
                     result = '[{"name":"' + name + '","img":"' + src + '","info":' + result + '}]';
+                    window.close();
                     cb((result))
                 });
 
@@ -63,6 +64,7 @@ exports.getAllMovie = function (cb) {
                             cb(json);
                         }
                     });
+                    window.close();
                 });
 
             });
